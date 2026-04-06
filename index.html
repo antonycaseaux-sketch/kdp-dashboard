@@ -1,751 +1,96 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Résultats KDP — Mars 2026</title>
-  <style>
-    :root {
-      --bg: #f5f7fb;
-      --card: #ffffff;
-      --text: #152033;
-      --muted: #6b7280;
-      --line: #d9dee7;
-      --primary: #0f766e;
-      --primary-soft: #dff7f3;
-      --danger: #b91c1c;
-      --warning: #b45309;
-      --success: #15803d;
-      --shadow: 0 10px 30px rgba(18, 38, 63, 0.08);
-      --radius: 18px;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(180deg, #f7fafc 0%, var(--bg) 100%);
-      color: var(--text);
-    }
-
-    .wrap {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 18px 14px 28px;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid rgba(15, 23, 42, 0.06);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    .hero {
-      display: grid;
-      grid-template-columns: 1.3fr 0.7fr;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .hero-main {
-      padding: 12px;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .hero-side {
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 6px;
-      background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-      color: white;
-    }
-
-    .eyebrow {
-      font-size: 11px;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 2px;
-      font-weight: 700;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(24px, 3.2vw, 34px);
-      line-height: 1;
-    }
-
-    .month-picker {
-      position: absolute;
-      top: calc(100% + 8px);
-      left: 12px;
-      display: none;
-      min-width: 220px;
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      padding: 8px;
-      z-index: 20;
-    }
-
-    .month-picker.open {
-      display: grid;
-      gap: 8px;
-    }
-
-    .month-option {
-      border: 0;
-      border-radius: 12px;
-      padding: 10px 12px;
-      text-align: left;
-      background: #f8fafc;
-      color: var(--text);
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .month-option:hover {
-      background: #eef2f7;
-    }
-
-    .month-option.active {
-      background: #dff7f3;
-      color: var(--primary);
-    }
-
-    .hero-side .small {
-      margin: 0;
-      font-size: 13px;
-      opacity: .9;
-      font-weight: 700;
-    }
-
-    .hero-side .big {
-      font-size: 30px;
-      font-weight: 800;
-      line-height: .95;
-    }
-
-    
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .stat {
-      padding: 14px;
-      border-radius: var(--radius);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      min-width: 0;
-    }
-
-    .stat.royalties { background: #f3f4f6; }
-    .stat.ads { background: #fee2e2; }
-    .stat.freelance { background: #ffedd5; }
-    .stat.margin { background: #dcfce7; }
-
-    .stat-label {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 4px;
-      font-weight: 700;
-    }
-
-    .stat-value {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-    }
-
-    
-
-    
-
-    .red { color: var(--danger); }
-    .orange { color: var(--warning); }
-    .green { color: var(--success); }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 10px;
-    }
-
-    .section {
-      padding: 16px;
-    }
-
-    .section h2 {
-      margin: 0 0 10px;
-      font-size: 18px;
-    }
-
-    .top-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .book-row {
-      display: grid;
-      grid-template-columns: 46px 1fr auto;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: #fbfcfe;
-    }
-
-    .gold { background: #fde68a; }
-    .silver { background: #e5e7eb; }
-    .bronze { background: #e7a977; }
-
-    .rank {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      background: var(--primary-soft);
-      color: var(--primary);
-      font-weight: 800;
-      font-size: 14px;
-    }
-
-    .rank.gold { background: #f59e0b; color: #fff; }
-    .rank.silver { background: #9ca3af; color: #fff; }
-    .rank.bronze { background: #b45309; color: #fff; }
-
-    .book-name {
-      font-weight: 700;
-      line-height: 1.25;
-    }
-
-    .book-sub {
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .book-amount {
-      font-weight: 800;
-      white-space: nowrap;
-      font-size: 14px;
-    }
-
-    .months-table {
-      width: 100%;
-      border-collapse: collapse;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      overflow: hidden;
-      background: #fbfcfe;
-    }
-
-    .months-table th,
-    .months-table td {
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--line);
-      font-size: 14px;
-    }
-
-    .months-table tr:last-child td {
-      border-bottom: 0;
-    }
-
-    .months-table th {
-      text-align: left;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      color: var(--muted);
-      background: #f8fafc;
-    }
-
-    .months-table td:last-child,
-    .months-table th:last-child {
-      text-align: right;
-    }
-
-    /* 👉 Net en gras + fond vert clair */
-    .months-table td:nth-child(5) {
-      font-weight: 700;
-      background: #dcfce7;
-    }
-
-    
-
-    .month-current td {
-      font-weight: 700;
-    }
-
-    .year-total-row td {
-      background: #f3f4f6;
-      font-weight: 800;
-      border-top: 2px solid var(--line);
-    }
-
-    @media (max-width: 980px) {
-      .hero {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .stats {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-      }
-
-      .grid {
-        grid-template-columns: 1.05fr 0.95fr;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .table-section { order: -1; }
-      .top-section { order: 0; }
-
-      .wrap {
-        padding: 10px 8px 20px;
-      }
-
-      .card {
-        border-radius: 12px;
-      }
-
-      .hero {
-        grid-template-columns: 1fr 1fr;
-        gap: 6px;
-        margin-bottom: 6px;
-      }
-
-      .hero-main,
-      .hero-side,
-      .section,
-      .stat {
-        padding: 10px;
-      }
-
-      .eyebrow {
-        font-size: 8px;
-      }
-
-      h1 {
-        font-size: 18px;
-      }
-
-      .hero-side {
-        gap: 4px;
-        align-items: flex-start;
-      }
-
-      .hero-side .small {
-        font-size: 10px;
-      }
-
-      .hero-side .big {
-        font-size: 20px;
-      }
-
-      
-
-      .month-picker {
-        left: 0;
-        right: 0;
-        min-width: 0;
-      }
-
-      .stats {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 6px;
-        margin-bottom: 6px;
-      }
-
-      .stat-label {
-        font-size: 9px;
-        margin-bottom: 2px;
-      }
-
-      .stat-value {
-        font-size: 16px;
-        line-height: 1;
-      }
-
-      .grid {
-        grid-template-columns: 1fr;
-        gap: 6px;
-      }
-
-      .section h2 {
-        font-size: 13px;
-        margin-bottom: 8px;
-      }
-
-      .top-list {
-        gap: 6px;
-      }
-
-      .book-row {
-        grid-template-columns: 32px 1fr auto;
-        gap: 6px;
-        padding: 8px;
-      }
-
-      .rank {
-        width: 28px;
-        height: 28px;
-        font-size: 10px;
-        border-radius: 8px;
-      }
-
-      .book-name,
-      .book-amount,
-      .months-table td {
-        font-size: 10px;
-      }
-
-      .book-sub,
-      .months-table th {
-        font-size: 8px;
-      }
-
-      .months-table {
-        table-layout: fixed;
-      }
-
-      .months-table th,
-      .months-table td {
-        padding: 5px 4px;
-        word-break: break-word;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Résultats KDP</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--text:#152033;--muted:#6b7280;--line:#d9dee7;--primary:#0f766e;--primary-soft:#dff7f3;--danger:#b91c1c;--warning:#b45309;--success:#15803d;--shadow:0 10px 30px rgba(18,38,63,.08);--radius:18px}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#f7fafc 0%,var(--bg) 100%);color:var(--text)}
+.wrap{max-width:1200px;margin:0 auto;padding:18px 14px 28px}.card{background:var(--card);border:1px solid rgba(15,23,42,.06);border-radius:var(--radius);box-shadow:var(--shadow)}
+.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:10px;margin-bottom:10px}.hero-main{padding:12px;position:relative;cursor:pointer}.hero-side{padding:10px;display:flex;flex-direction:column;justify-content:center;gap:6px;background:linear-gradient(135deg,#0f766e 0%,#115e59 100%);color:#fff}.eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;font-weight:700}h1{margin:0;font-size:clamp(24px,3.2vw,34px);line-height:1}#monthTitle{color:var(--primary);font-weight:800}.picker{position:absolute;top:calc(100% + 8px);left:12px;display:none;min-width:220px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:8px;z-index:20}.picker.open{display:grid;gap:8px}.option{border:0;border-radius:12px;padding:10px 12px;text-align:left;background:#f8fafc;color:var(--text);font:inherit;font-weight:700;cursor:pointer}.option:hover{background:#eef2f7}.option.active{background:#dff7f3;color:var(--primary)}
+.hero-side .small{margin:0;font-size:13px;opacity:.9;font-weight:700}.hero-side .big{font-size:30px;font-weight:800;line-height:.95}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:10px}.stat{padding:14px;border-radius:var(--radius);display:flex;flex-direction:column;justify-content:center;min-width:0}.royalties{background:#f3f4f6}.ads{background:#fee2e2}.freelance{background:#ffedd5}.margin{background:#dcfce7}.stat-label{font-size:12px;color:var(--muted);margin-bottom:4px;font-weight:700}.stat-value{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.1}.red{color:var(--danger)}.orange{color:var(--warning)}.green{color:var(--success)}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:10px}.section{padding:16px}.section h2{margin:0 0 10px;font-size:18px;background:#000;color:#fff;padding:8px 10px;border-radius:10px}.top-list{display:grid;gap:10px}.book-row{display:grid;grid-template-columns:46px 1fr auto;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#fbfcfe}.gold{background:#fde68a}.silver{background:#e5e7eb}.bronze{background:#e7a977}.rank{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:var(--primary-soft);color:var(--primary);font-weight:800;font-size:14px}.rank.gold{background:#f59e0b;color:#fff}.rank.silver{background:#9ca3af;color:#fff}.rank.bronze{background:#b45309;color:#fff}.book-name{font-weight:700;line-height:1.25}.book-sub{margin-top:3px;color:var(--muted);font-size:12px}.book-amount{font-weight:800;white-space:nowrap;font-size:14px}
+.months-table{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fbfcfe}.months-table th,.months-table td{padding:10px 12px;border-bottom:1px solid var(--line);font-size:14px}.months-table tr:last-child td{border-bottom:0}.months-table th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:#f8fafc}.months-table td:last-child,.months-table th:last-child{text-align:right}.months-table td:nth-child(5){font-weight:700;background:#dcfce7}.month-current td{font-weight:700}.year-total-row td{background:#f3f4f6;font-weight:800;border-top:2px solid var(--line)}
+@media (max-width:980px){.hero{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.grid{grid-template-columns:1.05fr .95fr}}
+@media (max-width:640px){.table-section{order:-1}.top-section{order:0}.wrap{padding:10px 8px 20px}.card{border-radius:12px}.hero{grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px}.hero-main,.hero-side,.section,.stat{padding:10px}.eyebrow{font-size:8px}h1{font-size:18px}.hero-side{gap:4px;align-items:flex-start}.hero-side .small{font-size:10px}.hero-side .big{font-size:20px}.picker{left:0;right:0;min-width:0}.stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:6px}.stat-label{font-size:9px;margin-bottom:2px}.stat-value{font-size:16px;line-height:1}.grid{grid-template-columns:1fr;gap:6px}.section h2{font-size:13px;margin-bottom:8px}.top-list{gap:6px}.book-row{grid-template-columns:32px 1fr auto;gap:6px;padding:8px}.rank{width:28px;height:28px;font-size:10px;border-radius:8px}.book-name,.book-amount,.months-table td{font-size:10px}.book-sub,.months-table th{font-size:8px}.months-table{table-layout:fixed}.months-table th,.months-table td{padding:5px 4px;word-break:break-word}}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <section class="hero">
-      <div class="card hero-main" id="monthCard">
-        <div class="eyebrow">Résultats KDP</div>
-        <h1 id="monthTitle">Mars 2026 ▾</h1>
-        <div class="month-picker" id="monthPicker"></div>
-      </div>
-      <div class="card hero-side">
-        <div class="small">Résultat net du mois</div>
-        <div class="big" id="netValue"></div>
-        
-      </div>
-    </section>
+<div class="wrap">
+  <section class="hero">
+    <div class="card hero-main" id="monthCard">
+      <div class="eyebrow">Résultats KDP</div>
+      <h1><span id="yearTitle">2026 ▾</span> <span id="monthTitle">Mars ▾</span></h1>
+      <div class="picker" id="monthPicker"></div>
+      <div class="picker" id="yearPicker" style="left:auto;right:12px"></div>
+    </div>
+    <div class="card hero-side">
+      <div class="small">Résultat net du mois</div>
+      <div class="big" id="netValue"></div>
+    </div>
+  </section>
 
-    <section class="stats">
-      <div class="card stat royalties">
-        <div class="stat-label">Royalties</div>
-        <div class="stat-value" id="royaltiesValue"></div>
-        
-      </div>
-      <div class="card stat ads">
-        <div class="stat-label">Dépenses pub</div>
-        <div class="stat-value red" id="adsValue"></div>
-        
-      </div>
-      <div class="card stat freelance">
-        <div class="stat-label">Dépenses Free</div>
-        <div class="stat-value orange" id="freelanceValue"></div>
-        
-      </div>
-      <div class="card stat margin">
-        <div class="stat-label">Marge nette</div>
-        <div class="stat-value green" id="marginValue"></div>
-        
-      </div>
-    </section>
+  <section class="stats">
+    <div class="card stat royalties"><div class="stat-label">Royalties</div><div class="stat-value" id="royaltiesValue"></div></div>
+    <div class="card stat ads"><div class="stat-label">Dépenses pub</div><div class="stat-value red" id="adsValue"></div></div>
+    <div class="card stat freelance"><div class="stat-label">Dépenses Free</div><div class="stat-value orange" id="freelanceValue"></div></div>
+    <div class="card stat margin"><div class="stat-label">Marge nette</div><div class="stat-value green" id="marginValue"></div></div>
+  </section>
 
-    <section class="grid">
-      <div class="card section top-section">
-        <h2 id="topTitle">Top 10 MARS</h2>
-        <div class="top-list" id="topList"></div>
-      </div>
-
-      <div class="card section table-section">
-        <h2>Résultats par mois</h2>
-        <table class="months-table">
-          <thead>
-            <tr>
-              <th>Mois</th>
-              <th>Royalties</th>
-              <th>Pub</th>
-              <th>Free</th>
-              <th>Net</th>
-              <th>Marge</th>
-            </tr>
-          </thead>
-          <tbody id="monthsTable"></tbody>
-          <tfoot>
-            <tr class="year-total-row">
-              <td>Total</td>
-              <td id="yearRoyalties"></td>
-              <td id="yearAds"></td>
-              <td id="yearFreelance"></td>
-              <td id="yearNet"></td>
-              <td id="yearMargin"></td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </section>
-  </div>
-
-  <script>
-    const datasets = {
-      '2026-01': {
-        month: 'Janvier 2026',
-        royalties: 4947,
-        ads: 2565,
-        freelancers: 0,
-        books: [
-          { title: 'Retraite : 50 Activités à faire pour une Retraite Heureuse', amount: 756 },
-          { title: 'LIVRE ADO - TEST DE PERSONNALITE', amount: 720 },
-          { title: 'Gymnastique : Tu es une Gymnaste Formidable', amount: 606 },
-          { title: 'Football Enfant - Tu es un Footballeur Formidable', amount: 441 },
-          { title: 'Livre Basketball - Tu es un Basketteur Formidable', amount: 320 },
-          { title: 'Danse Classique : Tu es une Danseuse Formidable', amount: 263 },
-          { title: 'Equitation Enfant : Tu es une Cavalière Formidable', amount: 261 },
-          { title: 'Livre Rugby - Tu es un Rugbyman Formidable', amount: 223 },
-          { title: 'Judo Enfant : Tu es un Judoka Formidable', amount: 197 },
-          { title: 'Livre Handball - Tu es un Handballeur Formidable', amount: 190 }
-        ]
-      },
-      '2026-02': {
-        month: 'Février 2026',
-        royalties: 8644,
-        ads: 2196,
-        freelancers: 900,
-        books: [
-          { title: 'TOI vs MOI spécial COUPLES', amount: 4389 },
-          { title: 'LIVRE ADO - TEST DE PERSONNALITE', amount: 651 },
-          { title: 'Gymnastique : Tu es une Gymnaste Formidable', amount: 541 },
-          { title: 'Retraite : 50 Activités à faire pour une Retraite Heureuse', amount: 474 },
-          { title: 'Equitation Enfant : Tu es une Cavalière Formidable', amount: 314 },
-          { title: 'Football Enfant - Tu es un Footballeur Formidable', amount: 313 },
-          { title: 'Livre Basketball - Tu es un Basketteur Formidable', amount: 292 },
-          { title: 'Livre Rugby - Tu es un Rugbyman Formidable', amount: 228 },
-          { title: 'Judo Enfant : Tu es un Judoka Formidable', amount: 218 },
-          { title: 'Danse Classique : Tu es une Danseuse Formidable', amount: 200 }
-        ]
-      },
-      '2026-03': {
-        month: 'Mars 2026',
-        royalties: 5580,
-        ads: 2700,
-        freelancers: 100,
-        books: [
-          { title: 'Retraite : 50 Activités à faire pour une Retraite Heureuse', amount: 765 },
-          { title: 'LIVRE ADO - TEST DE PERSONNALITE', amount: 629 },
-          { title: 'Gymnastique : Tu es une Gymnaste Formidable', amount: 577 },
-          { title: 'TOI vs MOI spécial COUPLES', amount: 453 },
-          { title: 'Football Enfant - Tu es un Footballeur Formidable', amount: 408 },
-          { title: 'Livre Basketball - Tu es un Basketteur Formidable', amount: 376 },
-          { title: 'Livre Rugby - Tu es un Rugbyman Formidable', amount: 284 },
-          { title: 'Judo Enfant : Tu es un Judoka Formidable', amount: 261 },
-          { title: 'Equitation Enfant : Tu es une Cavalière Formidable', amount: 233 },
-          { title: 'Raphael et le dino perdu', amount: 230 }
-        ]
-      }
-    };
-
-    let currentMonthKey = '2026-03';
-
-    const euro = new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'EUR',
-      maximumFractionDigits: 0
-    });
-
-    const percent = new Intl.NumberFormat('fr-FR', {
-      style: 'percent',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-
-    const monthOrder = ['2026-01', '2026-02', '2026-03'];
-
-    function getEl(id) {
-      return document.getElementById(id);
-    }
-
-    function renderMonthPicker() {
-      const monthPicker = getEl('monthPicker');
-      if (!monthPicker) return;
-
-      monthPicker.innerHTML = monthOrder.map((key) => {
-        const item = datasets[key];
-        return `<button class="month-option ${key === currentMonthKey ? 'active' : ''}" data-month="${key}">${item.month}</button>`;
-      }).join('');
-
-      monthPicker.querySelectorAll('.month-option').forEach((button) => {
-        button.addEventListener('click', (event) => {
-          event.stopPropagation();
-          currentMonthKey = button.dataset.month;
-          renderDashboard();
-          monthPicker.classList.remove('open');
-        });
-      });
-    }
-
-    function renderDashboard() {
-      const monthData = datasets[currentMonthKey];
-      if (!monthData) return;
-
-      const net = monthData.royalties - monthData.ads - monthData.freelancers;
-      const margin = monthData.royalties ? net / monthData.royalties : 0;
-      const topBooks = [...monthData.books].sort((a, b) => b.amount - a.amount).slice(0, 10);
-
-      const yearTotals = Object.values(datasets).reduce((acc, item) => {
-        acc.royalties += item.royalties;
-        acc.ads += item.ads;
-        acc.freelancers += item.freelancers;
-        return acc;
-      }, { royalties: 0, ads: 0, freelancers: 0 });
-
-      const yearData = monthOrder.map((key) => {
-        const m = datasets[key];
-        const net = m.royalties - m.ads - m.freelancers;
-        const margin = m.royalties ? net / m.royalties : 0;
-        return {
-          key,
-          label: m.month.replace(' 2026', ''),
-          royalties: m.royalties,
-          ads: m.ads,
-          freelancers: m.freelancers,
-          margin,
-          net
-        };
-      });
-
-      const yearNet = yearTotals.royalties - yearTotals.ads - yearTotals.freelancers;
-      const yearMargin = yearTotals.royalties ? yearNet / yearTotals.royalties : 0;
-
-      const refs = {
-        topTitle: getEl('topTitle'),
-        monthTitle: getEl('monthTitle'),
-        royaltiesValue: getEl('royaltiesValue'),
-        adsValue: getEl('adsValue'),
-        freelanceValue: getEl('freelanceValue'),
-        netValue: getEl('netValue'),
-        marginValue: getEl('marginValue'),
-        
-        topList: getEl('topList'),
-        monthsTable: getEl('monthsTable'),
-        yearRoyalties: getEl('yearRoyalties'),
-        yearAds: getEl('yearAds'),
-        yearFreelance: getEl('yearFreelance'),
-        yearMargin: getEl('yearMargin'),
-        yearNet: getEl('yearNet')
-      };
-
-      document.title = `Résultats KDP — ${monthData.month}`;
-      if (refs.monthTitle) refs.monthTitle.textContent = `${monthData.month} ▾`;
-      if (refs.royaltiesValue) refs.royaltiesValue.textContent = euro.format(monthData.royalties);
-      if (refs.adsValue) refs.adsValue.textContent = euro.format(monthData.ads);
-      if (refs.freelanceValue) refs.freelanceValue.textContent = euro.format(monthData.freelancers);
-      if (refs.netValue) refs.netValue.textContent = euro.format(net);
-      if (refs.marginValue) refs.marginValue.textContent = percent.format(margin);
-      
-
-      if (refs.topTitle) {
-        const rawMonth = monthData.month.split(' ')[0].toLowerCase();
-        const monthName = rawMonth.charAt(0).toUpperCase() + rawMonth.slice(1);
-        refs.topTitle.textContent = `Top 10 ${monthName}`;
-      }
-
-      if (refs.topList) {
-        refs.topList.innerHTML = topBooks.map((book, index) => {
-          const share = monthData.royalties ? (book.amount / monthData.royalties) : 0;
-          const medal = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
-          return `
-            <div class="book-row ${medal}">
-              <div class="rank ${medal}">#${index + 1}</div>
-              <div>
-                <div class="book-name">${book.title}</div>
-                <div class="book-sub">${percent.format(share)} du total</div>
-              </div>
-              <div class="book-amount">${euro.format(book.amount)}</div>
-            </div>
-          `;
-        }).join('');
-      }
-
-      if (refs.monthsTable) {
-        refs.monthsTable.innerHTML = yearData.map((item) => {
-          const currentClass = item.key === currentMonthKey ? 'month-current' : '';
-          return `
-            <tr class="${currentClass}">
-              <td>${item.label}</td>
-              <td>${euro.format(item.royalties)}</td>
-              <td class="red">${euro.format(item.ads)}</td>
-              <td class="orange">${euro.format(item.freelancers)}</td>
-              <td class="green">${euro.format(item.net)}</td>
-              <td class="green">${percent.format(item.margin)}</td>
-            </tr>
-          `;
-        }).join('');
-      }
-
-      if (refs.yearRoyalties) refs.yearRoyalties.textContent = euro.format(yearTotals.royalties);
-      if (refs.yearAds) refs.yearAds.textContent = euro.format(yearTotals.ads);
-      if (refs.yearFreelance) refs.yearFreelance.textContent = euro.format(yearTotals.freelancers);
-      if (refs.yearMargin) refs.yearMargin.textContent = percent.format(yearMargin);
-      if (refs.yearNet) refs.yearNet.textContent = euro.format(yearNet);
-
-      renderMonthPicker();
-    }
-
-    function runTests() {
-      console.assert(!!getEl('topList'), 'Le conteneur #topList doit exister.');
-      console.assert(!!getEl('monthsTable'), 'Le conteneur #monthsTable doit exister.');
-      console.assert(!!getEl('yearRoyalties'), 'Total royalties année manquant.');
-      console.assert(!!getEl('yearAds'), 'Total ads année manquant.');
-      console.assert(!!getEl('yearFreelance'), 'Total freelance année manquant.');
-      console.assert(!!getEl('yearMargin'), 'Total marge année manquant.');
-      console.assert(!!getEl('yearNet'), 'Total net année manquant.');
-      console.assert(!!getEl('yearAds'), 'Total ads année manquant.');
-      console.assert(!!getEl('yearFreelance'), 'Total freelance année manquant.');
-      console.assert(!!getEl('yearMargin'), 'Total marge année manquant.');
-      console.assert(!!getEl('yearNet'), 'Total net année manquant.');
-      console.assert(monthOrder.length === 3, 'Il doit y avoir 3 mois disponibles.');
-      console.assert(datasets['2026-03'].royalties === 5580, 'Mars 2026 doit avoir 5 580 € de royalties.');
-      console.assert(datasets['2026-02'].ads === 2196, 'Février 2026 doit avoir 2 196 € de pub.');
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const monthCard = getEl('monthCard');
-      const monthPicker = getEl('monthPicker');
-
-      if (monthCard && monthPicker) {
-        monthCard.addEventListener('click', () => {
-          monthPicker.classList.toggle('open');
-        });
-
-        document.addEventListener('click', (event) => {
-          if (!monthCard.contains(event.target)) {
-            monthPicker.classList.remove('open');
-          }
-        });
-      }
-
-      renderDashboard();
-      runTests();
-    });
-  </script>
+  <section class="grid">
+    <div class="card section top-section">
+      <h2 id="topTitle">Top 6 Mars</h2>
+      <div class="top-list" id="topList"></div>
+    </div>
+    <div class="card section table-section">
+      <h2 id="tableTitle">Résultats par mois 2026</h2>
+      <table class="months-table">
+        <thead><tr><th>Mois</th><th>Royalties</th><th>Pub</th><th>Free</th><th>Net</th><th>Marge</th></tr></thead>
+        <tbody id="monthsTable"></tbody>
+        <tfoot><tr class="year-total-row"><td>Total</td><td id="yearRoyalties"></td><td id="yearAds"></td><td id="yearFreelance"></td><td id="yearNet"></td><td id="yearMargin"></td></tr></tfoot>
+      </table>
+    </div>
+  </section>
+</div>
+<script>
+const Y={
+2023:{m:[['Mars',71,49,0,[]],['Avril',195,148,0,[]],['Mai',257,185,0,[]],['Juin',725,314,0,[]],['Juillet',811,307,0,[]],['Août',455,173,0,[]],['Septembre',506,186,0,[]],['Octobre',938,353,0,[]],['Novembre',1308,281,0,[]],['Décembre',1738,0,0,[]]]},
+2024:{m:[['Janvier',590,0,0,[]],['Février',467,0,0,[]],['Mars',508,0,0,[]],['Avril',395,0,0,[]],['Mai',411,0,0,[]],['Juin',617,0,0,[]],['Juillet',605,0,650,[]],['Août',530,0,0,[]],['Septembre',626,134,275,[]],['Octobre',559,165,265,[]],['Novembre',1116,227,0,[]],['Décembre',3773,880,0,[]]]},
+2025:{m:[
+['Janvier',1584,470,0,[['Retraite : 50 Activités à faire pour une Retraite Heureuse',733],['TDAH Enfant : Explorer et grandir avec le TDAH',343],['LIVRE ADO - TEST DE PERSONNALITE',143],['Retraite : 50 Destinations pour les retraités voyageurs',143],['LOGIGRAMME - Enquêtes Logiques Adulte',79],['Retraite : 50 Idées bien-être pour une retraite en pleine forme',38]]],
+['Février',1610,949,647,[['Retraite : 50 Activités à faire pour une Retraite Heureuse',455],['TDAH Enfant : Explorer et grandir avec le TDAH',401],['LIVRE ADO - TEST DE PERSONNALITE',187],['Livre Basketball - Tu es un Basketteur Formidable',127],['Retraite : 50 Destinations pour les retraités voyageurs',118],['Football Enfant - Tu es un Footballeur Formidable',85]]],
+['Mars',1963,1169,0,[['Retraite : 50 Activités à faire pour une Retraite Heureuse',648],['TDAH Enfant : Explorer et grandir avec le TDAH',329],['Livre Basketball - Tu es un Basketteur Formidable',202],['Retraite : 50 Destinations pour les retraités voyageurs',187],['Football Enfant - Tu es un Footballeur Formidable',184],['LIVRE ADO - TEST DE PERSONNALITE',151]]],
+['Avril',1926,1047,0,[['Football Enfant - Tu es un Footballeur Formidable',438],['Retraite : 50 Activités à faire pour une Retraite Heureuse',404],['Livre Basketball - Tu es un Basketteur Formidable',350],['TDAH Enfant : Explorer et grandir avec le TDAH',220],['Livre Handball - Tu es un Handballeur Formidable',179],['LIVRE ADO - TEST DE PERSONNALITE',108],['Retraite : 50 Destinations pour les retraités voyageurs',77],['LOGIGRAMME - Enquêtes Logiques Adulte',70],['Retraite : 50 Idées bien-être pour une retraite en pleine forme',31],['ORIGAMI ENFANT et Adulte : Le grand livre',13]]],
+['Mai',2260,1263,630,[['Retraite : 50 Activités à faire pour une Retraite Heureuse',489],['Football Enfant - Tu es un Footballeur Formidable',338],['Livre Basketball - Tu es un Basketteur Formidable',335],['Livre Handball - Tu es un Handballeur Formidable',296],['TDAH Enfant : Explorer et grandir avec le TDAH',189],['Retraite : 50 Destinations pour les retraités voyageurs',133],['LIVRE ADO - TEST DE PERSONNALITE',108],['Retraite : 50 Histoires Drôles pour une Retraite avec Humour',97],['Livre Tennis : Tu es un Tennisman Formidable',88],['LOGIGRAMME - Enquêtes Logiques Adulte',83]]],
+['Juin',3801,2118,800,[['Retraite : 50 Activités à faire pour une Retraite Heureuse',1053],['Football Enfant - Tu es un Footballeur Formidable',572],['Livre Basketball - Tu es un Basketteur Formidable',446],['Livre Tennis : Tu es un Tennisman Formidable',213],['LIVRE ADO - TEST DE PERSONNALITE',194],['Retraite : 50 Histoires Drôles pour une Retraite avec Humour',194],['Retraite : 50 Destinations pour les retraités voyageurs',194],['Judo Enfant : Tu es un Judoka Formidable',171],['Livre Handball - Tu es un Handballeur Formidable',163],['Livre Rugby - Tu es un Rugbyman Formidable',129]]],
+['Juillet',3721,2077,423,[['LIVRE ADO - TEST DE PERSONNALITE',657],['Retraite : 50 Activités à faire pour une Retraite Heureuse',502],['Football Enfant - Tu es un Footballeur Formidable',444],['Gymnastique : Tu es une Gymnaste Formidable',347],['Livre Basketball - Tu es un Basketteur Formidable',259],['Danse Classique : Tu es une Danseuse Formidable',230],['Livre Tennis : Tu es un Tennisman Formidable',192],['Livre Rugby - Tu es un Rugbyman Formidable',184],['Judo Enfant : Tu es un Judoka Formidable',138],['LOGIGRAMME - Enquêtes Logiques Adulte',137]]],
+['Août',2653,2059,0,[['Football Enfant - Tu es un Footballeur Formidable',388],['LIVRE ADO - TEST DE PERSONNALITE',349],['Gymnastique : Tu es une Gymnaste Formidable',321],['Danse Classique : Tu es une Danseuse Formidable',263],['Retraite : 50 Activités à faire pour une Retraite Heureuse',219],['Livre Basketball - Tu es un Basketteur Formidable',186],['Equitation Enfant : Tu es une Cavalière Formidable',172],['Livre Tennis : Tu es un Tennisman Formidable',158],['Judo Enfant : Tu es un Judoka Formidable',138],['Livre Rugby - Tu es un Rugbyman Formidable',125]]],
+['Septembre',3174,2040,0,[['Football Enfant - Tu es un Footballeur Formidable',467],['Equitation Enfant : Tu es une Cavalière Formidable',384],['Retraite : 50 Activités à faire pour une Retraite Heureuse',380],['LIVRE ADO - TEST DE PERSONNALITE',335],['Gymnastique : Tu es une Gymnaste Formidable',334],['Danse Classique : Tu es une Danseuse Formidable',179]]],
+['Octobre',3954,2989,0,[['Retraite : 50 Activités à faire pour une Retraite Heureuse',519],['Football Enfant - Tu es un Footballeur Formidable',481],['LIVRE ADO - TEST DE PERSONNALITE',407],['Gymnastique : Tu es une Gymnaste Formidable',375],['Equitation Enfant : Tu es une Cavalière Formidable',349],['Danse Classique : Tu es une Danseuse Formidable',285],['Livre Basketball - Tu es un Basketteur Formidable',264],['Judo Enfant : Tu es un Judoka Formidable',227],['Livre Rugby - Tu es un Rugbyman Formidable',223],['Livre Tennis : Tu es un Tennisman Formidable',171]]],
+['Novembre',12493,4735,216,[['Les énigmes du Lutin Farceur',4047],['Gymnastique : Tu es une Gymnaste Formidable',1173],['LIVRE ADO - TEST DE PERSONNALITE',1002],['Football Enfant - Tu es un Footballeur Formidable',942],['Retraite : 50 Activités à faire pour une Retraite Heureuse',753],['Livre Basketball - Tu es un Basketteur Formidable',741],['Equitation Enfant : Tu es une Cavalière Formidable',684],['Danse Classique : Tu es une Danseuse Formidable',625],['Livre Rugby - Tu es un Rugbyman Formidable',522],['Judo Enfant : Tu es un Judoka Formidable',405]]],
+['Décembre',22203,7503,250,[['LIVRE ADO - TEST DE PERSONNALITE',4086],['Gymnastique : Tu es une Gymnaste Formidable',2758],['Football Enfant - Tu es un Footballeur Formidable',2214],['Retraite : 50 Activités à faire pour une Retraite Heureuse',2115],['Livre Rugby - Tu es un Rugbyman Formidable',1568],['Livre Basketball - Tu es un Basketteur Formidable',1447],['Equitation Enfant : Tu es une Cavalière Formidable',1337],['Judo Enfant : Tu es un Judoka Formidable',1302],['Danse Classique : Tu es une Danseuse Formidable',1269],['Livre Tennis : Tu es un Tennisman Formidable',986]]]
+]},
+2026:{m:[
+['Janvier',4947,2565,0,[['Retraite : 50 Activités à faire pour une Retraite Heureuse',756],['LIVRE ADO - TEST DE PERSONNALITE',720],['Gymnastique : Tu es une Gymnaste Formidable',606],['Football Enfant - Tu es un Footballeur Formidable',441],['Livre Basketball - Tu es un Basketteur Formidable',320],['Danse Classique : Tu es une Danseuse Formidable',263]]],
+['Février',8644,2196,900,[['TOI vs MOI spécial COUPLES',4389],['LIVRE ADO - TEST DE PERSONNALITE',651],['Gymnastique : Tu es une Gymnaste Formidable',541],['Retraite : 50 Activités à faire pour une Retraite Heureuse',474],['Equitation Enfant : Tu es une Cavalière Formidable',314],['Football Enfant - Tu es un Footballeur Formidable',313]]],
+['Mars',5580,2700,100,[['Retraite : 50 Activités à faire pour une Retraite Heureuse',765],['LIVRE ADO - TEST DE PERSONNALITE',629],['Gymnastique : Tu es une Gymnaste Formidable',577],['TOI vs MOI spécial COUPLES',453],['Football Enfant - Tu es un Footballeur Formidable',408],['Livre Basketball - Tu es un Basketteur Formidable',376]]]
+]}
+};
+const YEARS=Object.keys(Y).sort();
+const euro=new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0});
+const percent=new Intl.NumberFormat('fr-FR',{style:'percent',minimumFractionDigits:2,maximumFractionDigits:2});
+let currentYear='2026',currentIndex=2;
+const $=id=>document.getElementById(id);
+const months=yr=>Y[yr].m;
+function current(){return months(currentYear)[currentIndex]}
+function clampIndex(){const m=months(currentYear);if(currentIndex>=m.length)currentIndex=0;return m}
+function renderPickers(){const mp=$('monthPicker'),yp=$('yearPicker'),m=clampIndex();mp.innerHTML=m.map((x,i)=>`<button class="option ${i===currentIndex?'active':''}" data-i="${i}">${x[0]}</button>`).join('');yp.innerHTML=YEARS.map(y=>`<button class="option ${y===currentYear?'active':''}" data-y="${y}">${y}</button>`).join('');mp.querySelectorAll('[data-i]').forEach(b=>b.onclick=e=>{e.stopPropagation();currentIndex=+b.dataset.i;render();mp.classList.remove('open')});yp.querySelectorAll('[data-y]').forEach(b=>b.onclick=e=>{e.stopPropagation();currentYear=b.dataset.y;currentIndex=0;render();yp.classList.remove('open')})}
+function render(){const [month,roy,ads,free,books]=current(),net=roy-ads-free,margin=roy?net/roy:0,all=months(currentYear);document.title=`Résultats KDP — ${month} ${currentYear}`;$('yearTitle').textContent=`${currentYear} ▾`;$('monthTitle').textContent=`${month} ▾`;$('royaltiesValue').textContent=euro.format(roy);$('adsValue').textContent=euro.format(ads);$('freelanceValue').textContent=euro.format(free);$('netValue').textContent=euro.format(net);$('marginValue').textContent=percent.format(margin);$('topTitle').textContent=`Top 6 ${month}`;$('tableTitle').textContent=`Résultats par mois ${currentYear}`;$('topList').innerHTML=[...books].sort((a,b)=>b[1]-a[1]).slice(0,6).map((b,i)=>{const medal=i===0?'gold':i===1?'silver':i===2?'bronze':'';return `<div class="book-row ${medal}"><div class="rank ${medal}">#${i+1}</div><div><div class="book-name">${b[0]}</div><div class="book-sub">${percent.format(roy?b[1]/roy:0)} du total</div></div><div class="book-amount">${euro.format(b[1])}</div></div>`}).join('')||'<div class="book-row"><div class="rank">-</div><div><div class="book-name">Pas communiqué</div><div class="book-sub">Pas communiqué</div></div><div class="book-amount">—</div></div>';
+let tr=0,ta=0,tf=0;$('monthsTable').innerHTML=all.map((m,i)=>{const n=m[1]-m[2]-m[3],mg=m[1]?n/m[1]:0;tr+=m[1];ta+=m[2];tf+=m[3];return `<tr class="${i===currentIndex?'month-current':''}"><td>${m[0]}</td><td>${euro.format(m[1])}</td><td class="red">${euro.format(m[2])}</td><td class="orange">${euro.format(m[3])}</td><td class="green">${euro.format(n)}</td><td class="green">${percent.format(mg)}</td></tr>`}).join('');const yn=tr-ta-tf;$('yearRoyalties').textContent=euro.format(tr);$('yearAds').textContent=euro.format(ta);$('yearFreelance').textContent=euro.format(tf);$('yearNet').textContent=euro.format(yn);$('yearMargin').textContent=percent.format(tr?yn/tr:0);renderPickers()}
+window.addEventListener('DOMContentLoaded',()=>{const card=$('monthCard'),mp=$('monthPicker'),yp=$('yearPicker');card.addEventListener('click',e=>{if(e.target.id==='yearTitle'){e.stopPropagation();yp.classList.toggle('open');mp.classList.remove('open')}else{mp.classList.toggle('open');yp.classList.remove('open')}});document.addEventListener('click',e=>{if(!card.contains(e.target)){mp.classList.remove('open');yp.classList.remove('open')}});console.assert(!!$('topList'),'topList manquant');console.assert(!!$('monthsTable'),'monthsTable manquant');console.assert(Y['2026'].m[2][1]===5580,'Mars 2026 incorrect');render()});
+</script>
 </body>
 </html>
+
