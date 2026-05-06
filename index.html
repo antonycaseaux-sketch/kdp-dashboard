@@ -22,7 +22,7 @@
   <section class="hero">
     <div class="card hero-main" id="monthCard">
       <div class="eyebrow">Résultats KDP</div>
-      <h1><span id="yearTitle">2026 ▾</span> <span id="monthTitle">Mars ▾</span></h1>
+      <h1><span id="yearTitle">2026 ▾</span> <span id="monthTitle">Avril ▾</span></h1>
       <div class="picker" id="monthPicker"></div>
       <div class="picker" id="yearPicker" style="left:auto;right:12px"></div>
     </div>
@@ -41,7 +41,7 @@
 
   <section class="grid">
     <div class="card section top-section">
-      <h2 id="topTitle">Top 6 Mars</h2>
+      <h2 id="topTitle">Top 6 Avril</h2>
       <div class="top-list" id="topList"></div>
     </div>
     <div class="card section table-section">
@@ -75,13 +75,14 @@ const Y={
 2026:{m:[
 ['Janvier',4947,2565,0,[['Retraite : 50 Activités à faire pour une Retraite Heureuse',756],['LIVRE ADO - TEST DE PERSONNALITE',720],['Gymnastique : Tu es une Gymnaste Formidable',606],['Football Enfant - Tu es un Footballeur Formidable',441],['Livre Basketball - Tu es un Basketteur Formidable',320],['Danse Classique : Tu es une Danseuse Formidable',263]]],
 ['Février',8644,2196,900,[['TOI vs MOI spécial COUPLES',4389],['LIVRE ADO - TEST DE PERSONNALITE',651],['Gymnastique : Tu es une Gymnaste Formidable',541],['Retraite : 50 Activités à faire pour une Retraite Heureuse',474],['Equitation Enfant : Tu es une Cavalière Formidable',314],['Football Enfant - Tu es un Footballeur Formidable',313]]],
-['Mars',5580,2700,100,[['Retraite : 50 Activités à faire pour une Retraite Heureuse',765],['LIVRE ADO - TEST DE PERSONNALITE',629],['Gymnastique : Tu es une Gymnaste Formidable',577],['TOI vs MOI spécial COUPLES',453],['Football Enfant - Tu es un Footballeur Formidable',408],['Livre Basketball - Tu es un Basketteur Formidable',376]]]
+['Mars',5580,2700,100,[['Retraite : 50 Activités à faire pour une Retraite Heureuse',765],['LIVRE ADO - TEST DE PERSONNALITE',629],['Gymnastique : Tu es une Gymnaste Formidable',577],['TOI vs MOI spécial COUPLES',453],['Football Enfant - Tu es un Footballeur Formidable',408],['Livre Basketball - Tu es un Basketteur Formidable',376]]],
+['Avril',4225,1954,50,[['LIVRE ADO - TEST DE PERSONNALITE',553],['Retraite : 50 Activités à faire pour une Retraite Heureuse',493],['Gymnastique : Tu es une Gymnaste Formidable',434],['Football Enfant - Tu es un Footballeur Formidable',370],['Livre Basketball - Tu es un Basketteur Formidable',323],['Equitation Enfant : Tu es une Cavalière Formidable',297]]]
 ]}
 };
 const YEARS=Object.keys(Y).sort();
 const euro=new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0});
 const percent=new Intl.NumberFormat('fr-FR',{style:'percent',minimumFractionDigits:2,maximumFractionDigits:2});
-let currentYear='2026',currentIndex=2;
+let currentYear='2026',currentIndex=3;
 const $=id=>document.getElementById(id);
 const months=yr=>Y[yr].m;
 function current(){return months(currentYear)[currentIndex]}
@@ -89,8 +90,7 @@ function clampIndex(){const m=months(currentYear);if(currentIndex>=m.length)curr
 function renderPickers(){const mp=$('monthPicker'),yp=$('yearPicker'),m=clampIndex();mp.innerHTML=m.map((x,i)=>`<button class="option ${i===currentIndex?'active':''}" data-i="${i}">${x[0]}</button>`).join('');yp.innerHTML=YEARS.map(y=>`<button class="option ${y===currentYear?'active':''}" data-y="${y}">${y}</button>`).join('');mp.querySelectorAll('[data-i]').forEach(b=>b.onclick=e=>{e.stopPropagation();currentIndex=+b.dataset.i;render();mp.classList.remove('open')});yp.querySelectorAll('[data-y]').forEach(b=>b.onclick=e=>{e.stopPropagation();currentYear=b.dataset.y;currentIndex=0;render();yp.classList.remove('open')})}
 function render(){const [month,roy,ads,free,books]=current(),net=roy-ads-free,margin=roy?net/roy:0,all=months(currentYear);document.title=`Résultats KDP — ${month} ${currentYear}`;$('yearTitle').textContent=`${currentYear} ▾`;$('monthTitle').textContent=`${month} ▾`;$('royaltiesValue').textContent=euro.format(roy);$('adsValue').textContent=euro.format(ads);$('freelanceValue').textContent=euro.format(free);$('netValue').textContent=euro.format(net);$('marginValue').textContent=percent.format(margin);$('topTitle').textContent=`Top 6 ${month}`;$('tableTitle').textContent=`Résultats par mois ${currentYear}`;$('topList').innerHTML=[...books].sort((a,b)=>b[1]-a[1]).slice(0,6).map((b,i)=>{const medal=i===0?'gold':i===1?'silver':i===2?'bronze':'';return `<div class="book-row ${medal}"><div class="rank ${medal}">#${i+1}</div><div><div class="book-name">${b[0]}</div><div class="book-sub">${percent.format(roy?b[1]/roy:0)} du total</div></div><div class="book-amount">${euro.format(b[1])}</div></div>`}).join('')||'<div class="book-row"><div class="rank">-</div><div><div class="book-name">Pas communiqué</div><div class="book-sub">Pas communiqué</div></div><div class="book-amount">—</div></div>';
 let tr=0,ta=0,tf=0;$('monthsTable').innerHTML=all.map((m,i)=>{const n=m[1]-m[2]-m[3],mg=m[1]?n/m[1]:0;tr+=m[1];ta+=m[2];tf+=m[3];return `<tr class="${i===currentIndex?'month-current':''}"><td>${m[0]}</td><td>${euro.format(m[1])}</td><td class="red">${euro.format(m[2])}</td><td class="orange">${euro.format(m[3])}</td><td class="green">${euro.format(n)}</td><td class="green">${percent.format(mg)}</td></tr>`}).join('');const yn=tr-ta-tf;$('yearRoyalties').textContent=euro.format(tr);$('yearAds').textContent=euro.format(ta);$('yearFreelance').textContent=euro.format(tf);$('yearNet').textContent=euro.format(yn);$('yearMargin').textContent=percent.format(tr?yn/tr:0);renderPickers()}
-window.addEventListener('DOMContentLoaded',()=>{const card=$('monthCard'),mp=$('monthPicker'),yp=$('yearPicker');card.addEventListener('click',e=>{if(e.target.id==='yearTitle'){e.stopPropagation();yp.classList.toggle('open');mp.classList.remove('open')}else{mp.classList.toggle('open');yp.classList.remove('open')}});document.addEventListener('click',e=>{if(!card.contains(e.target)){mp.classList.remove('open');yp.classList.remove('open')}});console.assert(!!$('topList'),'topList manquant');console.assert(!!$('monthsTable'),'monthsTable manquant');console.assert(Y['2026'].m[2][1]===5580,'Mars 2026 incorrect');render()});
+window.addEventListener('DOMContentLoaded',()=>{const card=$('monthCard'),mp=$('monthPicker'),yp=$('yearPicker');card.addEventListener('click',e=>{if(e.target.id==='yearTitle'){e.stopPropagation();yp.classList.toggle('open');mp.classList.remove('open')}else{mp.classList.toggle('open');yp.classList.remove('open')}});document.addEventListener('click',e=>{if(!card.contains(e.target)){mp.classList.remove('open');yp.classList.remove('open')}});render()});
 </script>
 </body>
 </html>
-
