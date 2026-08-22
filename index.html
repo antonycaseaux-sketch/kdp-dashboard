@@ -22,7 +22,7 @@
   <section class="hero">
     <div class="card hero-main" id="monthCard">
       <div class="eyebrow">Résultats KDP</div>
-      <h1><span id="yearTitle">2026 ▾</span> <span id="monthTitle">Juin ▾</span></h1>
+      <h1><span id="yearTitle">2026 ▾</span> <span id="monthTitle">Juillet ▾</span></h1>
       <div class="picker" id="monthPicker"></div>
       <div class="picker" id="yearPicker" style="left:auto;right:12px"></div>
     </div>
@@ -41,7 +41,7 @@
 
   <section class="grid">
     <div class="card section top-section">
-      <h2 id="topTitle">Top 6 Juin</h2>
+      <h2 id="topTitle">Top 6 Juillet</h2>
       <div class="top-list" id="topList"></div>
     </div>
     <div class="card section table-section">
@@ -78,13 +78,14 @@ const Y={
 ['Mars',5580,2700,100,[['Retraite : 50 Activités à faire pour une Retraite Heureuse',765],['LIVRE ADO - TEST DE PERSONNALITE',629],['Gymnastique : Tu es une Gymnaste Formidable',577],['TOI vs MOI spécial COUPLES',453],['Football Enfant - Tu es un Footballeur Formidable',408],['Livre Basketball - Tu es un Basketteur Formidable',376]]],
 ['Avril',4225,1954,50,[['LIVRE ADO - TEST DE PERSONNALITE',553],['Retraite : 50 Activités à faire pour une Retraite Heureuse',493],['Gymnastique : Tu es une Gymnaste Formidable',434],['Football Enfant - Tu es un Footballeur Formidable',370],['Livre Basketball - Tu es un Basketteur Formidable',323],['Equitation Enfant : Tu es une Cavalière Formidable',297]]],
 ['Mai',4408,2469,300,[['Retraite : 50 Activités à faire pour une Retraite Heureuse',584],['LIVRE ADO - TEST DE PERSONNALITE',483],['Gymnastique : Tu es une Gymnaste Formidable',450],['Football Enfant - Tu es un Footballeur Formidable',330],['Livre Basketball - Tu es un Basketteur Formidable',324],['Jeux Mémoire Sénior pour Booster sa Mémoire',301]]],
-['Juin',6481,3040,0,[['Retraite : 50 Activités à faire pour une Retraite Heureuse',1248],['LIVRE ADO - TEST DE PERSONNALITE',711],['Gymnastique : Tu es une Gymnaste Formidable',540],['Livre Rugby - Tu es un Rugbyman Formidable',458],['Football Enfant - Tu es un Footballeur Formidable',427],['Livre Basketball - Tu es un Basketteur Formidable',379]]]
+['Juin',6481,3040,0,[['Retraite : 50 Activités à faire pour une Retraite Heureuse',1248],['LIVRE ADO - TEST DE PERSONNALITE',711],['Gymnastique : Tu es une Gymnaste Formidable',540],['Livre Rugby - Tu es un Rugbyman Formidable',458],['Football Enfant - Tu es un Footballeur Formidable',427],['Livre Basketball - Tu es un Basketteur Formidable',379]]],
+['Juillet',4558,2075,0,[['LIVRE ADO - TEST DE PERSONNALITE',635],['Retraite : 50 Activités à faire pour une Retraite Heureuse',559],['Gymnastique : Tu es une Gymnaste Formidable',360],['Football Enfant - Tu es un Footballeur Formidable',327],['Cahier de Jeux Football Enfant',310],['Jeux Mémoire Sénior pour Booster sa Mémoire',281]]]
 ]}
 };
 const YEARS=Object.keys(Y).sort();
 const euro=new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0});
 const percent=new Intl.NumberFormat('fr-FR',{style:'percent',minimumFractionDigits:2,maximumFractionDigits:2});
-let currentYear='2026',currentIndex=5;
+let currentYear='2026',currentIndex=6;
 const $=id=>document.getElementById(id);
 const months=yr=>Y[yr].m;
 function current(){return months(currentYear)[currentIndex]}
