@@ -133,16 +133,16 @@ function render(){
   $('monthsTable').innerHTML=all.map((m,i)=>{
     const n=m[1]-m[2]-m[3],mg=m[1]?n/m[1]:0;
     tr+=m[1];ta+=m[2];tf+=m[3];
-    const n1=getNetN1(currentYear,m[0]);
+    const n1=getNetN1(currentYear,m[0]);const shortName=m[0].slice(0,4);
     let n1cell='<td style="color:var(--muted);font-size:13px;text-align:right">—</td>';
     if(n1!==null){
       trn1+=n1;trn1count++;
       const diff=n-n1;
       const diffStr=(diff>=0?'+':'')+euro.format(diff);
       const diffColor=diff>=0?'var(--success)':'var(--danger)';
-      n1cell=`<td style="text-align:right">${euro.format(n1)}<span class="delta" style="color:${diffColor}">${diffStr}</span></td>`;
+      n1cell=`<td style="text-align:right;font-size:14px;color:${diffColor};font-weight:700">${diffStr}</td>`;
     }
-    return `<tr class="${i===currentIndex?'month-current':''}"><td>${m[0]}</td><td>${euro.format(m[1])}</td><td class="red">${euro.format(m[2])}</td><td class="orange">${euro.format(m[3])}</td><td class="green">${euro.format(n)}</td>${n1cell}<td class="green">${percent.format(mg)}</td></tr>`;
+    return `<tr class="${i===currentIndex?'month-current':''}"><td>${shortName}</td><td>${euro.format(m[1])}</td><td class="red">${euro.format(m[2])}</td><td class="orange">${euro.format(m[3])}</td><td class="green">${euro.format(n)}</td>${n1cell}<td class="green">${percent.format(mg)}</td></tr>`;
   }).join('');
 
   const yn=tr-ta-tf;
