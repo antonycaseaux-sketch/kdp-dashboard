@@ -140,7 +140,7 @@ function render(){
       const diff=n-n1;
       const diffStr=(diff>=0?'+':'')+euro.format(diff);
       const diffColor=diff>=0?'var(--success)':'var(--danger)';
-      n1cell=`<td style="text-align:right;font-size:14px;color:${diffColor};font-weight:700">${diffStr}</td>`;
+      n1cell=`<td><span style="font-size:11px;font-weight:600;color:${diffColor}">${diffStr}</span></td>`;
     }
     return `<tr class="${i===currentIndex?'month-current':''}"><td>${shortName}</td><td>${euro.format(m[1])}</td><td class="red">${euro.format(m[2])}</td><td class="orange">${euro.format(m[3])}</td><td class="green">${euro.format(n)}</td>${n1cell}<td class="green">${percent.format(mg)}</td></tr>`;
   }).join('');
@@ -150,7 +150,7 @@ function render(){
   $('yearAds').textContent=euro.format(ta);
   $('yearFreelance').textContent=euro.format(tf);
   $('yearNet').textContent=euro.format(yn);
-  $('yearNetN1').textContent=trn1count>0?euro.format(trn1):'—';
+  $('yearNetN1').style.textAlign='left';$('yearNetN1').innerHTML=trn1count>0?`<span style="font-size:11px;font-weight:600;color:var(--text)">${euro.format(trn1)}</span>`:'—';
   $('yearMargin').textContent=percent.format(tr?yn/tr:0);
   renderPickers();
 }
