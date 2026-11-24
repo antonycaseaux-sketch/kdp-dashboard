@@ -150,21 +150,22 @@ let gr=0,ga=0,gf=0,gd=0,anyd=false;
 $('monthsTable').innerHTML=YEARS.map(y=>{const ms=months(y);let r=0,a=0,f=0;ms.forEach(m=>{r+=m[1];a+=m[2];f+=m[3]});gr+=r;ga+=a;gf+=f;const n=r-a-f;
 let cell='<td style="color:var(--muted);font-size:13px;text-align:right">—</td>';const py=String(+y-1);
 if(Y[py]){let cn=0,pn=0,c=0;ms.forEach(m=>{const p=Y[py].m.find(x=>x[0]===m[0]);if(p){cn+=m[1]-m[2]-m[3];pn+=p[1]-p[2]-p[3];c++}});if(c){const d=cn-pn;gd+=d;anyd=true;cell='<td><span style="font-size:11px;font-weight:600;color:'+(d>=0?'var(--success)':'var(--danger)')+'">'+(d>=0?'+':'-')+new Intl.NumberFormat('fr-FR').format(Math.round(Math.abs(d)))+'</span></td>'}}
-return '<tr data-y="'+y+'" class="'+(y===currentYear?'month-current':'')+'" style="cursor:pointer"><td>'+y+'</td><td>'+euro.format(r)+'</td><td class="red">'+euro.format(a)+'</td><td class="orange">'+euro.format(f)+'</td><td class="green">'+euro.format(n)+'</td>'+cell+'<td class="green">'+percent.format(r?n/r:0)+'</td></tr>'}).join('');
+return '<tr data-y="'+y+'" class="'+(y===currentYear?'month-current':'')+'" style="cursor:pointer"><td>'+y+'</td><td>'+eur(r)+'</td><td class="red">'+eur(a)+'</td><td class="orange">'+eur(f)+'</td><td class="green">'+eur(n)+'</td>'+cell+'<td class="green">'+percent.format(r?n/r:0)+'</td></tr>'}).join('');
 $('monthsTable').querySelectorAll('tr[data-y]').forEach(tr=>tr.onclick=()=>{currentYear=tr.dataset.y;currentIndex=months(currentYear).length-1;render()});
-const gn=gr-ga-gf;$('yearRoyalties').textContent=euro.format(gr);$('yearAds').textContent=euro.format(ga);$('yearFreelance').textContent=euro.format(gf);$('yearNet').textContent=euro.format(gn);
+const gn=gr-ga-gf;$('yearRoyalties').textContent=eur(gr);$('yearAds').textContent=eur(ga);$('yearFreelance').textContent=eur(gf);$('yearNet').textContent=eur(gn);
 $('yearNetN1').innerHTML='';
 $('yearMargin').textContent=percent.format(gr?gn/gr:0);
 }
+function eur(v){return euro.format(v).replace(/[\s\u00a0\u202f]+€/g,'€')}
 function render(){
   const [month,roy,ads,free,books]=current(),net=roy-ads-free,margin=roy?net/roy:0,all=months(currentYear);
   document.title=`Résultats KDP — ${month} ${currentYear}`;
   $('yearTitle').textContent=`${currentYear} ▾`;
   $('monthTitle').textContent=`${month} ▾`;
-  $('royaltiesValue').textContent=euro.format(roy);
-  $('adsValue').textContent=euro.format(ads);
-  $('freelanceValue').textContent=euro.format(free);
-  $('netValue').textContent=euro.format(net);
+  $('royaltiesValue').textContent=eur(roy);
+  $('adsValue').textContent=eur(ads);
+  $('freelanceValue').textContent=eur(free);
+  $('netValue').textContent=eur(net);
   $('marginValue').textContent=percent.format(margin);
   let rankBooks=books,rankRoy=roy;if(rankMode==='annee'||rankMode==='tout'){const mp={};let yr=0;(rankMode==='tout'?YEARS.flatMap(y=>months(y)):months(currentYear)).forEach(m=>{yr+=m[1];m[4].forEach(b=>{mp[b[0]]=(mp[b[0]]||0)+b[1]})});rankBooks=Object.keys(mp).map(k=>[k,mp[k]]);rankRoy=yr;}
 $('topTitle').textContent='Classement '+(rankMode==='annee'?currentYear:rankMode==='tout'?'général':month+' '+currentYear);
@@ -172,7 +173,7 @@ $('topTitle').textContent='Classement '+(rankMode==='annee'?currentYear:rankMode
 
   $('topList').innerHTML=[...rankBooks].sort((a,b)=>b[1]-a[1]).map((b,i)=>{
     const medal=i===0?'gold':i===1?'silver':i===2?'bronze':'';
-    return `<div class="book-row ${medal}"><div class="rank ${medal}">#${i+1}</div><div><div class="book-name">${b[0]}</div><div class="book-sub">${percent.format(rankRoy?b[1]/rankRoy:0)} du total</div></div><div class="book-amount">${euro.format(b[1])}</div></div>`;
+    return `<div class="book-row ${medal}"><div class="rank ${medal}">#${i+1}</div><div><div class="book-name">${b[0]}</div><div class="book-sub">${percent.format(rankRoy?b[1]/rankRoy:0)} du total</div></div><div class="book-amount">${eur(b[1])}</div></div>`;
   }).join('')||'<div class="book-row"><div class="rank">-</div><div><div class="book-name">Pas communiqué</div><div class="book-sub">Pas communiqué</div></div><div class="book-amount">—</div></div>';
 
   if(tableMode==='annees'){renderYearsTable();renderPickers();syncToggles();return}
@@ -189,15 +190,15 @@ let tr=0,ta=0,tf=0,trn1=0,trn1count=0,tdiff=0;
       const diffColor=diff>=0?'var(--success)':'var(--danger)';
       n1cell=`<td><span style="font-size:11px;font-weight:600;color:${diffColor}">${diffStr}</span></td>`;
     }
-    return `<tr class="${i===currentIndex?'month-current':''}"><td>${shortName}</td><td>${euro.format(m[1])}</td><td class="red">${euro.format(m[2])}</td><td class="orange">${euro.format(m[3])}</td><td class="green">${euro.format(n)}</td>${n1cell}<td class="green">${percent.format(mg)}</td></tr>`;
+    return `<tr class="${i===currentIndex?'month-current':''}"><td>${shortName}</td><td>${eur(m[1])}</td><td class="red">${eur(m[2])}</td><td class="orange">${eur(m[3])}</td><td class="green">${eur(n)}</td>${n1cell}<td class="green">${percent.format(mg)}</td></tr>`;
   }).join('');
 
   const yn=tr-ta-tf;
-  $('yearRoyalties').textContent=euro.format(tr);
-  $('yearAds').textContent=euro.format(ta);
-  $('yearFreelance').textContent=euro.format(tf);
-  $('yearNet').textContent=euro.format(yn);
-$('yearNetN1').innerHTML='';
+  $('yearRoyalties').textContent=eur(tr);
+  $('yearAds').textContent=eur(ta);
+  $('yearFreelance').textContent=eur(tf);
+  $('yearNet').textContent=eur(yn);
+$('yearNetN1').style.textAlign='left';$('yearNetN1').innerHTML=trn1count?'<span style="font-size:11px;font-weight:600;color:'+(tdiff>=0?'var(--success)':'var(--danger)')+'">'+(tdiff>=0?'+':'-')+new Intl.NumberFormat('fr-FR').format(Math.round(Math.abs(tdiff)))+'</span>':'';
   $('yearMargin').textContent=percent.format(tr?yn/tr:0);
   renderPickers();syncToggles();
 }
