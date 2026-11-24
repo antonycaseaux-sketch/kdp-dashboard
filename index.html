@@ -153,7 +153,7 @@ if(Y[py]){let cn=0,pn=0,c=0;ms.forEach(m=>{const p=Y[py].m.find(x=>x[0]===m[0]);
 return '<tr data-y="'+y+'" class="'+(y===currentYear?'month-current':'')+'" style="cursor:pointer"><td>'+y+'</td><td>'+euro.format(r)+'</td><td class="red">'+euro.format(a)+'</td><td class="orange">'+euro.format(f)+'</td><td class="green">'+euro.format(n)+'</td>'+cell+'<td class="green">'+percent.format(r?n/r:0)+'</td></tr>'}).join('');
 $('monthsTable').querySelectorAll('tr[data-y]').forEach(tr=>tr.onclick=()=>{currentYear=tr.dataset.y;currentIndex=months(currentYear).length-1;render()});
 const gn=gr-ga-gf;$('yearRoyalties').textContent=euro.format(gr);$('yearAds').textContent=euro.format(ga);$('yearFreelance').textContent=euro.format(gf);$('yearNet').textContent=euro.format(gn);
-$('yearNetN1').style.textAlign='left';$('yearNetN1').innerHTML=anyd?'<span style="font-size:11px;font-weight:600;color:'+(gd>=0?'var(--success)':'var(--danger)')+'">'+(gd>=0?'+':'-')+new Intl.NumberFormat('fr-FR').format(Math.round(Math.abs(gd)))+'</span>':'—';
+$('yearNetN1').innerHTML='';
 $('yearMargin').textContent=percent.format(gr?gn/gr:0);
 }
 function render(){
@@ -197,7 +197,7 @@ let tr=0,ta=0,tf=0,trn1=0,trn1count=0,tdiff=0;
   $('yearAds').textContent=euro.format(ta);
   $('yearFreelance').textContent=euro.format(tf);
   $('yearNet').textContent=euro.format(yn);
-  $('yearNetN1').style.textAlign='left';$('yearNetN1').innerHTML=trn1count>0?`<span style="font-size:11px;font-weight:600;color:${tdiff>=0?'var(--success)':'var(--danger)'}">${(tdiff>=0?'+':'-')+new Intl.NumberFormat('fr-FR').format(Math.round(Math.abs(tdiff)))}</span>`:'—';
+$('yearNetN1').innerHTML='';
   $('yearMargin').textContent=percent.format(tr?yn/tr:0);
   renderPickers();syncToggles();
 }
