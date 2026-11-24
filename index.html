@@ -248,7 +248,7 @@ const list=Object.keys(mp).map(k=>[k,mp[k]]).sort((x,y)=>y[1]-x[1]);
 const tot=list.reduce((s,r)=>s+r[1],0)||1;
 const sum=(i,j)=>list.slice(i,j).reduce((s,r)=>s+r[1],0);
 const t3=Math.round(sum(0,3)/tot*100),t10=Math.round(sum(3,10)/tot*100),rest=Math.max(0,100-t3-t10);
-b.innerHTML=box('Répartition des ventes','<div class="sp-stack"><i class="s1" style="width:'+t3+'%"></i><i class="s2" style="width:'+t10+'%"></i><i class="s3" style="width:'+rest+'%"></i></div><div class="sp-leg"><span><u class="s1"></u>Top 3 : '+t3+' %</span><span><u class="s2"></u>Places 4 à 10 : '+t10+' %</span><span><u class="s3"></u>Tous les autres : '+rest+' %</span></div>')+box('En bref',kv('Livres qui ont vendu',list.length)+kv('Total des livres',fm(tot))+kv('Moyenne par livre',fm(tot/Math.max(1,list.length)))+(list[0]?kv('N°1',list[0][0]):''));
+b.innerHTML=box('Répartition des ventes','<div class="sp-stack"><i class="s1" style="width:'+t3+'%"></i><i class="s2" style="width:'+t10+'%"></i><i class="s3" style="width:'+rest+'%"></i></div><div class="sp-leg"><span><u class="s1"></u>Top 3 : '+t3+' %</span><span><u class="s2"></u>Places 4 à 10 : '+t10+' %</span><span><u class="s3"></u>Tous les autres : '+rest+' %</span></div>')+box('En bref',kv('Livres qui ont vendu',list.length)+kv('Total des livres',fm(tot))+kv('Moyenne par livre',fm(tot/Math.max(1,list.length))));
 }
 const _r=render;render=function(){_r();renderSide()};
 renderSide();
