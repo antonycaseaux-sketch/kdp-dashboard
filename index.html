@@ -15,6 +15,7 @@
 .months-table{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fbfcfe}.months-table th,.months-table td{padding:10px 8px;border-bottom:1px solid var(--line);font-size:14px;white-space:nowrap}.months-table tr:last-child td{border-bottom:0}.months-table th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:#f8fafc}.months-table td:last-child,.months-table th:last-child{text-align:right}.months-table td:nth-child(5){font-weight:700;background:#dcfce7}.months-table td:nth-child(6){color:var(--muted);font-size:13px}.delta{font-size:11px;font-weight:700;margin-left:4px}.month-current td{font-weight:700}.year-total-row td{background:#f3f4f6;font-weight:800;border-top:2px solid var(--line)}
 @media (max-width:980px){.hero{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.grid{grid-template-columns:1.05fr .95fr}}
 @media (max-width:640px){.table-section{order:-1}.top-section{order:0}.wrap{padding:10px 8px 20px}.card{border-radius:12px}.hero{grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px}.hero-main,.hero-side,.section,.stat{padding:10px}.eyebrow{font-size:8px}h1{font-size:18px}.hero-side{gap:4px;align-items:flex-start}.hero-side .small{font-size:10px}.hero-side .big{font-size:20px}.picker{left:0;right:0;min-width:0}.stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:6px}.stat-label{font-size:9px;margin-bottom:2px}.stat-value{font-size:16px;line-height:1}.grid{grid-template-columns:1fr;gap:6px}.section h2{font-size:13px;margin-bottom:8px}.top-list{gap:6px}.book-row{grid-template-columns:32px 1fr auto;gap:6px;padding:8px}.rank{width:28px;height:28px;font-size:10px;border-radius:8px}.book-name,.book-amount,.months-table td{font-size:10px}.book-sub,.months-table th{font-size:8px}.months-table{table-layout:fixed}.months-table th,.months-table td{padding:5px 4px;word-break:break-word}.delta{display:none}}
+.toggle{display:flex;gap:4px;background:#eef2f7;border-radius:12px;padding:4px;margin:0 0 12px}.toggle button{flex:1;border:0;border-radius:9px;padding:9px 10px;font:inherit;font-weight:700;color:var(--muted);background:transparent;cursor:pointer}.toggle button.on{background:#fff;color:var(--primary);box-shadow:0 1px 4px rgba(15,23,42,.12)}@media (max-width:640px){.toggle button{padding:6px;font-size:11px}}
 </style>
 </head>
 <body>
@@ -42,11 +43,13 @@
   <section class="grid">
     <div class="card section top-section">
       <h2 id="topTitle">Classement Octobre 2026</h2>
-      <div class="top-list" id="topList"></div>
+      <div class="toggle" id="rankToggle"><button data-m="mois">Ce mois-ci</button><button data-m="annee">Année</button></div>
+<div class="top-list" id="topList"></div>
     </div>
     <div class="card section table-section">
       <h2 id="tableTitle">Résultats par mois 2026</h2>
-      <table class="months-table">
+      <div class="toggle" id="tableToggle"><button data-t="mois">Par mois</button><button data-t="annees">Par année</button></div>
+<table class="months-table">
         <colgroup><col style="width:9%"><col style="width:17%"><col style="width:13%"><col style="width:11%"><col style="width:15%"><col style="width:12%"><col style="width:13%"></colgroup>
         <thead><tr><th>Mois</th><th>Royalties</th><th>Pub</th><th>Free</th><th>Net</th><th>Δ N-1</th><th>Marge</th></tr></thead>
         <tbody id="monthsTable"></tbody>
@@ -139,6 +142,20 @@ function renderPickers(){
   yp.querySelectorAll('[data-y]').forEach(b=>b.onclick=e=>{e.stopPropagation();currentYear=b.dataset.y;currentIndex=0;render();yp.classList.remove('open')});
 }
 
+let rankMode='mois',tableMode='mois';
+function syncToggles(){document.querySelectorAll('#rankToggle button').forEach(b=>b.classList.toggle('on',b.dataset.m===rankMode));document.querySelectorAll('#tableToggle button').forEach(b=>b.classList.toggle('on',b.dataset.t===tableMode))}
+function renderYearsTable(){
+$('tableTitle').textContent='Résultats par année';document.querySelector('.months-table thead th').textContent='Année';
+let gr=0,ga=0,gf=0,gd=0,anyd=false;
+$('monthsTable').innerHTML=YEARS.map(y=>{const ms=months(y);let r=0,a=0,f=0;ms.forEach(m=>{r+=m[1];a+=m[2];f+=m[3]});gr+=r;ga+=a;gf+=f;const n=r-a-f;
+let cell='<td style="color:var(--muted);font-size:13px;text-align:right">—</td>';const py=String(+y-1);
+if(Y[py]){let cn=0,pn=0,c=0;ms.forEach(m=>{const p=Y[py].m.find(x=>x[0]===m[0]);if(p){cn+=m[1]-m[2]-m[3];pn+=p[1]-p[2]-p[3];c++}});if(c){const d=cn-pn;gd+=d;anyd=true;cell='<td><span style="font-size:11px;font-weight:600;color:'+(d>=0?'var(--success)':'var(--danger)')+'">'+(d>=0?'+':'-')+new Intl.NumberFormat('fr-FR').format(Math.round(Math.abs(d)))+'</span></td>'}}
+return '<tr data-y="'+y+'" class="'+(y===currentYear?'month-current':'')+'" style="cursor:pointer"><td>'+y+'</td><td>'+euro.format(r)+'</td><td class="red">'+euro.format(a)+'</td><td class="orange">'+euro.format(f)+'</td><td class="green">'+euro.format(n)+'</td>'+cell+'<td class="green">'+percent.format(r?n/r:0)+'</td></tr>'}).join('');
+$('monthsTable').querySelectorAll('tr[data-y]').forEach(tr=>tr.onclick=()=>{currentYear=tr.dataset.y;currentIndex=months(currentYear).length-1;render()});
+const gn=gr-ga-gf;$('yearRoyalties').textContent=euro.format(gr);$('yearAds').textContent=euro.format(ga);$('yearFreelance').textContent=euro.format(gf);$('yearNet').textContent=euro.format(gn);
+$('yearNetN1').style.textAlign='left';$('yearNetN1').innerHTML=anyd?'<span style="font-size:11px;font-weight:600;color:'+(gd>=0?'var(--success)':'var(--danger)')+'">'+(gd>=0?'+':'-')+new Intl.NumberFormat('fr-FR').format(Math.round(Math.abs(gd)))+'</span>':'—';
+$('yearMargin').textContent=percent.format(gr?gn/gr:0);
+}
 function render(){
   const [month,roy,ads,free,books]=current(),net=roy-ads-free,margin=roy?net/roy:0,all=months(currentYear);
   document.title=`Résultats KDP — ${month} ${currentYear}`;
@@ -149,15 +166,17 @@ function render(){
   $('freelanceValue').textContent=euro.format(free);
   $('netValue').textContent=euro.format(net);
   $('marginValue').textContent=percent.format(margin);
-  $('topTitle').textContent=`Classement ${month} ${currentYear}`;
-  $('tableTitle').textContent=`Résultats par mois ${currentYear}`;
+  let rankBooks=books,rankRoy=roy;if(rankMode==='annee'){const mp={};let yr=0;months(currentYear).forEach(m=>{yr+=m[1];m[4].forEach(b=>{mp[b[0]]=(mp[b[0]]||0)+b[1]})});rankBooks=Object.keys(mp).map(k=>[k,mp[k]]);rankRoy=yr;}
+$('topTitle').textContent='Classement '+(rankMode==='annee'?currentYear:month+' '+currentYear);
+  $('tableTitle').textContent='Résultats par mois '+currentYear;document.querySelector('.months-table thead th').textContent='Mois';
 
-  $('topList').innerHTML=[...books].sort((a,b)=>b[1]-a[1]).map((b,i)=>{
+  $('topList').innerHTML=[...rankBooks].sort((a,b)=>b[1]-a[1]).map((b,i)=>{
     const medal=i===0?'gold':i===1?'silver':i===2?'bronze':'';
-    return `<div class="book-row ${medal}"><div class="rank ${medal}">#${i+1}</div><div><div class="book-name">${b[0]}</div><div class="book-sub">${percent.format(roy?b[1]/roy:0)} du total</div></div><div class="book-amount">${euro.format(b[1])}</div></div>`;
+    return `<div class="book-row ${medal}"><div class="rank ${medal}">#${i+1}</div><div><div class="book-name">${b[0]}</div><div class="book-sub">${percent.format(rankRoy?b[1]/rankRoy:0)} du total</div></div><div class="book-amount">${euro.format(b[1])}</div></div>`;
   }).join('')||'<div class="book-row"><div class="rank">-</div><div><div class="book-name">Pas communiqué</div><div class="book-sub">Pas communiqué</div></div><div class="book-amount">—</div></div>';
 
-  let tr=0,ta=0,tf=0,trn1=0,trn1count=0,tdiff=0;
+  if(tableMode==='annees'){renderYearsTable();renderPickers();syncToggles();return}
+let tr=0,ta=0,tf=0,trn1=0,trn1count=0,tdiff=0;
   $('monthsTable').innerHTML=all.map((m,i)=>{
     const n=m[1]-m[2]-m[3],mg=m[1]?n/m[1]:0;
     tr+=m[1];ta+=m[2];tf+=m[3];
@@ -180,7 +199,7 @@ function render(){
   $('yearNet').textContent=euro.format(yn);
   $('yearNetN1').style.textAlign='left';$('yearNetN1').innerHTML=trn1count>0?`<span style="font-size:11px;font-weight:600;color:${tdiff>=0?'var(--success)':'var(--danger)'}">${(tdiff>=0?'+':'-')+new Intl.NumberFormat('fr-FR').format(Math.round(Math.abs(tdiff)))}</span>`:'—';
   $('yearMargin').textContent=percent.format(tr?yn/tr:0);
-  renderPickers();
+  renderPickers();syncToggles();
 }
 
 window.addEventListener('DOMContentLoaded',()=>{
@@ -190,7 +209,8 @@ window.addEventListener('DOMContentLoaded',()=>{
     else{mp.classList.toggle('open');yp.classList.remove('open')}
   });
   document.addEventListener('click',e=>{if(!card.contains(e.target)){mp.classList.remove('open');yp.classList.remove('open')}});
-  render();
+  document.querySelectorAll('#rankToggle button').forEach(b=>b.onclick=()=>{rankMode=b.dataset.m;render()});document.querySelectorAll('#tableToggle button').forEach(b=>b.onclick=()=>{tableMode=b.dataset.t;render()});
+render();
 });
 </script>
 </body>
